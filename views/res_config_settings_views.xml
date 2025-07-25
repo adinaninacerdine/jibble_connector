@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2024 Huri Money -->
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl) -->
+<odoo>
+    <record id="res_config_settings_view_form_jibble" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.jibble</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr_attendance.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <block name="hr_attendance_settings" position="after">
+                <block title="Jibble Integration" name="jibble_integration">
+                    <setting id="jibble_sync_configuration">
+                        <field name="jibble_sync_enabled" />
+                        <label for="jibble_sync_enabled" />
+                        <div class="text-muted">
+                            Enable automatic synchronization with Jibble time tracking
+                        </div>
+                        <div class="content-group" invisible="not jibble_sync_enabled">
+                            <div class="row mt16">
+                                <label for="jibble_api_key" class="col-lg-3 o_light_label" />
+                                <field name="jibble_api_key" password="True" />
+                            </div>
+                            <div class="row">
+                                <label for="jibble_organization_id" class="col-lg-3 o_light_label" />
+                                <field name="jibble_organization_id" />
+                            </div>
+                            <div class="row">
+                                <label for="jibble_webhook_secret" class="col-lg-3 o_light_label" />
+                                <field name="jibble_webhook_secret" password="True" />
+                            </div>
+                            <div class="row">
+                                <label for="jibble_sync_interval" class="col-lg-3 o_light_label" />
+                                <field name="jibble_sync_interval" />
+                                <span class="o_light_label">minutes</span>
+                            </div>
+                            <div class="row">
+                                <label for="jibble_create_timesheet" class="col-lg-3 o_light_label" />
+                                <field name="jibble_create_timesheet" />
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </block>
+        </field>
+    </record>
+</odoo>

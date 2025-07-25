@@ -1,0 +1,10 @@
+# Jibble Connector Requirements
+# These dependencies are required for the Jibble integration
+
+# HTTP requests library for API calls
+requests>=2.25.0
+
+# Additional dependencies that may be required
+# (these are typically included with Odoo)
+# python-dateutil>=2.8.0
+# pytz>=2021.1

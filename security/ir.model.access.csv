@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_jibble_sync_log_user,jibble.sync.log.user,model_jibble_sync_log,hr.group_hr_user,1,0,0,0
+access_jibble_sync_log_manager,jibble.sync.log.manager,model_jibble_sync_log,hr.group_hr_manager,1,1,1,1
