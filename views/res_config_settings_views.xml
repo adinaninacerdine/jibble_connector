@@ -7,40 +7,40 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
-            <xpath expr="//app[@name='hr_attendance']" position="after">
+            <xpath expr="//form" position="inside">
                 <app name="jibble_connector" string="Jibble Integration">
-                <block title="Jibble Integration" name="jibble_integration">
-                    <setting id="jibble_sync_configuration">
-                        <field name="jibble_sync_enabled" />
-                        <label for="jibble_sync_enabled" />
-                        <div class="text-muted">
-                            Enable automatic synchronization with Jibble time tracking
-                        </div>
-                        <div class="content-group" invisible="not jibble_sync_enabled">
-                            <div class="row mt16">
-                                <label for="jibble_api_key" class="col-lg-3 o_light_label" />
-                                <field name="jibble_api_key" password="True" />
+                    <block title="Jibble Integration" name="jibble_integration">
+                        <setting id="jibble_sync_configuration">
+                            <field name="jibble_sync_enabled" />
+                            <label for="jibble_sync_enabled" />
+                            <div class="text-muted">
+                                Enable automatic synchronization with Jibble time tracking
                             </div>
-                            <div class="row">
-                                <label for="jibble_organization_id" class="col-lg-3 o_light_label" />
-                                <field name="jibble_organization_id" />
+                            <div class="content-group" invisible="not jibble_sync_enabled">
+                                <div class="row mt16">
+                                    <label for="jibble_api_key" class="col-lg-3 o_light_label" />
+                                    <field name="jibble_api_key" password="True" />
+                                </div>
+                                <div class="row">
+                                    <label for="jibble_organization_id" class="col-lg-3 o_light_label" />
+                                    <field name="jibble_organization_id" />
+                                </div>
+                                <div class="row">
+                                    <label for="jibble_webhook_secret" class="col-lg-3 o_light_label" />
+                                    <field name="jibble_webhook_secret" password="True" />
+                                </div>
+                                <div class="row">
+                                    <label for="jibble_sync_interval" class="col-lg-3 o_light_label" />
+                                    <field name="jibble_sync_interval" />
+                                    <span class="o_light_label">minutes</span>
+                                </div>
+                                <div class="row">
+                                    <label for="jibble_create_timesheet" class="col-lg-3 o_light_label" />
+                                    <field name="jibble_create_timesheet" />
+                                </div>
                             </div>
-                            <div class="row">
-                                <label for="jibble_webhook_secret" class="col-lg-3 o_light_label" />
-                                <field name="jibble_webhook_secret" password="True" />
-                            </div>
-                            <div class="row">
-                                <label for="jibble_sync_interval" class="col-lg-3 o_light_label" />
-                                <field name="jibble_sync_interval" />
-                                <span class="o_light_label">minutes</span>
-                            </div>
-                            <div class="row">
-                                <label for="jibble_create_timesheet" class="col-lg-3 o_light_label" />
-                                <field name="jibble_create_timesheet" />
-                            </div>
-                        </div>
-                    </setting>
-                </block>
+                        </setting>
+                    </block>
                 </app>
             </xpath>
         </field>
