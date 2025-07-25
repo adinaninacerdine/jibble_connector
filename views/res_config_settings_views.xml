@@ -8,7 +8,7 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app name="jibble_connector" string="Jibble Integration">
+                <app name="jibble_connector" string="Jibble Integration" icon="fa-clock-o">
                     <block title="Jibble Integration" name="jibble_integration">
                         <setting id="jibble_sync_configuration">
                             <field name="jibble_sync_enabled" />
