@@ -38,3 +38,8 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="jibble_connector.create_timesheet",
         help="Automatically create timesheet entries from attendance",
     )
+    jibble_api_secret = fields.Char(
+        string="Jibble API Secret",
+        config_parameter="jibble_connector.api_secret",
+        help="API secret for Jibble integration",
+    )

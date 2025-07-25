@@ -35,6 +35,10 @@
                                     <span class="o_light_label">minutes</span>
                                 </div>
                                 <div class="row">
+                                    <label for="jibble_api_secret" class="col-lg-3 o_light_label" />
+                                    <field name="jibble_api_secret" password="True" />
+                                </div>
+                                <div class="row">
                                     <label for="jibble_create_timesheet" class="col-lg-3 o_light_label" />
                                     <field name="jibble_create_timesheet" />
                                 </div>
