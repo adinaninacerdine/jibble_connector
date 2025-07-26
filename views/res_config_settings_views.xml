@@ -57,6 +57,12 @@
                                             string="Discover Organization"
                                             class="btn-secondary"
                                         />
+                                        <button
+                                            name="debug_jibble_api"
+                                            type="object"
+                                            string="Debug API"
+                                            class="btn-secondary ml8"
+                                        />
                                     </div>
                                 </div>
                             </div>

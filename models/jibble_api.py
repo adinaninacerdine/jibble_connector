@@ -226,3 +226,78 @@ class JibbleApi(models.AbstractModel):
                 continue
                 
         return {"success": False, "message": "Could not discover organization"}
+    
+    @api.model
+    def debug_api_detailed(self):
+        """Detailed debugging of API calls with full response info"""
+        config = self._get_api_config()
+        api_key = config["api_key"]
+        
+        if not api_key:
+            return {"message": "❌ No API Key configured"}
+        
+        debug_info = []
+        debug_info.append(f"🔑 API Key: {api_key[:10]}...{api_key[-4:]} (masked)")
+        debug_info.append(f"📏 Key Length: {len(api_key)} characters")
+        debug_info.append(f"🔤 Key Format: {'UUID-like' if '-' in api_key else 'Other'}")
+        debug_info.append("")
+        debug_info.append("🧪 DETAILED TESTING:")
+        
+        # Test configurations with detailed logging
+        test_configs = [
+            {
+                "name": "Standard Bearer Token",
+                "url": "https://api.jibble.io/v1",
+                "headers": {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                "endpoints": ["me", "user", "profile"]
+            },
+            {
+                "name": "X-API-Key Header",
+                "url": "https://api.jibble.io/v1", 
+                "headers": {"X-API-Key": api_key, "Content-Type": "application/json"},
+                "endpoints": ["me", "user", "profile"]
+            },
+            {
+                "name": "Workspace URL + Bearer",
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                "endpoints": ["me", "user", "profile"]
+            }
+        ]
+        
+        for i, config_test in enumerate(test_configs, 1):
+            debug_info.append(f"\n--- Test {i}: {config_test['name']} ---")
+            debug_info.append(f"URL: {config_test['url']}")
+            debug_info.append(f"Headers: {config_test['headers']}")
+            
+            for endpoint in config_test["endpoints"]:
+                try:
+                    url = f"{config_test['url']}/{endpoint}"
+                    response = requests.get(url, headers=config_test["headers"], timeout=10)
+                    
+                    debug_info.append(f"\n  📡 {endpoint}:")
+                    debug_info.append(f"    Status: {response.status_code}")
+                    debug_info.append(f"    Headers: {dict(response.headers)}")
+                    
+                    if response.status_code == 200:
+                        try:
+                            data = response.json()
+                            debug_info.append(f"    ✅ SUCCESS! Data: {str(data)[:100]}...")
+                            return {"message": "\n".join(debug_info)}
+                        except:
+                            debug_info.append(f"    ✅ SUCCESS! Raw: {response.text[:100]}...")
+                            return {"message": "\n".join(debug_info)}
+                    else:
+                        debug_info.append(f"    ❌ Error: {response.text[:100]}...")
+                        
+                except Exception as e:
+                    debug_info.append(f"    💥 Exception: {str(e)}")
+        
+        debug_info.append("\n❌ ALL TESTS FAILED")
+        debug_info.append("\n💡 SUGGESTIONS:")
+        debug_info.append("1. Verify API key in Jibble settings")
+        debug_info.append("2. Check if API key has expired")
+        debug_info.append("3. Confirm API access is enabled")
+        debug_info.append("4. Try regenerating the API key")
+        
+        return {"message": "\n".join(debug_info)}

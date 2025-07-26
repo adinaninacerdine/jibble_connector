@@ -112,3 +112,18 @@ class ResConfigSettings(models.TransientModel):
                     "type": "warning",
                 },
             }
+    
+    def debug_jibble_api(self):
+        """Advanced debugging of Jibble API"""
+        api_service = self.env["jibble.api"]
+        result = api_service.debug_api_detailed()
+        
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "API Debug Results",
+                "message": result["message"],
+                "type": "info",
+            },
+        }
