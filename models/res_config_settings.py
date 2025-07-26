@@ -50,12 +50,16 @@ class ResConfigSettings(models.TransientModel):
         result = api_service.test_connection()
         
         if result["success"]:
+            message = result["message"]
+            if "data" in result:
+                message += f"\n\nData preview: {str(result['data'])[:200]}..."
+            
             return {
                 "type": "ir.actions.client",
                 "tag": "display_notification",
                 "params": {
                     "title": "Connection Test",
-                    "message": result["message"],
+                    "message": message,
                     "type": "success",
                 },
             }
@@ -67,5 +71,44 @@ class ResConfigSettings(models.TransientModel):
                     "title": "Connection Test Failed",
                     "message": result["message"],
                     "type": "danger",
+                },
+            }
+    
+    def discover_jibble_organization(self):
+        """Discover organization ID automatically"""
+        api_service = self.env["jibble.api"]
+        result = api_service.discover_organization()
+        
+        if result["success"]:
+            data = result["data"]
+            message = f"Organization data found!\n\nURL: {result['url']}\nData: {str(data)[:300]}..."
+            
+            # Try to extract organization ID if present
+            org_id = None
+            if isinstance(data, dict):
+                org_id = data.get("organizationId") or data.get("organization", {}).get("id")
+            elif isinstance(data, list) and data:
+                org_id = data[0].get("id") if "id" in data[0] else None
+                
+            if org_id:
+                message += f"\n\nFound Organization ID: {org_id}\n(Copy this to Organization ID field)"
+            
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Organization Discovery",
+                    "message": message,
+                    "type": "success",
+                },
+            }
+        else:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Discovery Failed",
+                    "message": result["message"],
+                    "type": "warning",
                 },
             }

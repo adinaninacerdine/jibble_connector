@@ -110,43 +110,97 @@ class JibbleApi(models.AbstractModel):
     @api.model
     def test_connection(self):
         """Test connection to Jibble API"""
-        # Test different API URLs
-        test_urls = [
-            "https://workspace.prod.jibble.io/v1",
-            "https://api.jibble.io/v1", 
-            "https://workspace.jibble.io/v1"
+        config = self._get_api_config()
+        api_key = config["api_key"]
+        
+        if not api_key:
+            return {"success": False, "message": "API Key not configured"}
+        
+        # Test different API configurations
+        test_configs = [
+            {
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                "endpoints": ["People", "Organizations", "me"]
+            },
+            {
+                "url": "https://api.jibble.io/v1", 
+                "headers": {
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                "endpoints": ["People", "Organizations", "me"]
+            },
+            {
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {
+                    "X-API-Key": api_key,
+                    "Content-Type": "application/json"
+                },
+                "endpoints": ["People", "Organizations", "me"]
+            }
         ]
         
-        config = self._get_api_config()
-        headers = self._get_headers()
-        
-        for base_url in test_urls:
-            try:
-                # Test simple endpoint
-                url = f"{base_url}/People"
-                response = requests.get(url, headers=headers, timeout=10)
-                
-                if response.status_code == 200:
-                    return {
-                        "success": True, 
-                        "message": f"Connection successful with {base_url}"
-                    }
-                elif response.status_code == 401:
-                    return {
-                        "success": False,
-                        "message": "Authentication failed - check your API key"
-                    }
-                elif response.status_code == 403:
-                    return {
-                        "success": False,
-                        "message": "Access forbidden - check your permissions"
-                    }
+        for config_test in test_configs:
+            for endpoint in config_test["endpoints"]:
+                try:
+                    url = f"{config_test['url']}/{endpoint}"
+                    response = requests.get(url, headers=config_test["headers"], timeout=10)
                     
-            except requests.exceptions.RequestException as e:
-                _logger.debug(f"Failed to connect to {base_url}: {str(e)}")
-                continue
+                    _logger.info(f"Testing {url} - Status: {response.status_code}")
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        return {
+                            "success": True,
+                            "message": f"Connection successful! Endpoint: {endpoint}, URL: {config_test['url']}",
+                            "data": data[:3] if isinstance(data, list) else data  # Limit response size
+                        }
+                    elif response.status_code == 401:
+                        continue  # Try next config
+                    elif response.status_code == 403:
+                        return {
+                            "success": False,
+                            "message": f"Access forbidden for endpoint {endpoint}. Check permissions."
+                        }
+                        
+                except requests.exceptions.RequestException as e:
+                    _logger.debug(f"Failed {url}: {str(e)}")
+                    continue
         
         return {
             "success": False,
-            "message": "Could not connect to any Jibble API endpoint. Check your API key and network connection."
+            "message": "Authentication failed with all tested configurations. Verify your API key."
         }
+    
+    @api.model  
+    def discover_organization(self):
+        """Try to discover organization ID automatically"""
+        config = self._get_api_config()
+        api_key = config["api_key"]
+        
+        if not api_key:
+            return {"success": False, "message": "API Key not configured"}
+            
+        # Try to get user info first
+        test_urls = [
+            "https://workspace.prod.jibble.io/v1/me",
+            "https://api.jibble.io/v1/me",
+            "https://workspace.prod.jibble.io/v1/Organizations"
+        ]
+        
+        headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+        
+        for url in test_urls:
+            try:
+                response = requests.get(url, headers=headers, timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    return {"success": True, "data": data, "url": url}
+            except:
+                continue
+                
+        return {"success": False, "message": "Could not discover organization"}

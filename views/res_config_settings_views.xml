@@ -50,6 +50,12 @@
                                         string="Test Connection"
                                         class="btn-secondary"
                                     />
+                                    <button
+                                        name="discover_jibble_organization"
+                                        type="object"
+                                        string="Discover Organization"
+                                        class="btn-secondary ml8"
+                                    />
                                 </div>
                             </div>
                         </setting>
