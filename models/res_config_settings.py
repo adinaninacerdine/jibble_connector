@@ -43,3 +43,29 @@ class ResConfigSettings(models.TransientModel):
         config_parameter="jibble_connector.api_secret",
         help="API secret for Jibble integration",
     )
+    
+    def test_jibble_connection(self):
+        """Test connection to Jibble API"""
+        api_service = self.env["jibble.api"]
+        result = api_service.test_connection()
+        
+        if result["success"]:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Connection Test",
+                    "message": result["message"],
+                    "type": "success",
+                },
+            }
+        else:
+            return {
+                "type": "ir.actions.client",
+                "tag": "display_notification",
+                "params": {
+                    "title": "Connection Test Failed",
+                    "message": result["message"],
+                    "type": "danger",
+                },
+            }

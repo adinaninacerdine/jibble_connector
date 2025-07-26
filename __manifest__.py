@@ -20,6 +20,7 @@
         "views/hr_employee_views.xml",
         "views/jibble_sync_log_views.xml",
         "views/res_config_settings_views.xml",
+        "wizards/jibble_sync_wizard_views.xml",
     ],
     "external_dependencies": {
         "python": ["requests"],

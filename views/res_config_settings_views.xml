@@ -42,6 +42,15 @@
                                     <label for="jibble_create_timesheet" class="col-lg-3 o_light_label" />
                                     <field name="jibble_create_timesheet" />
                                 </div>
+                                <div class="row mt16">
+                                    <div class="col-lg-3"></div>
+                                    <button
+                                        name="test_jibble_connection"
+                                        type="object"
+                                        string="Test Connection"
+                                        class="btn-secondary"
+                                    />
+                                </div>
                             </div>
                         </setting>
                     </block>

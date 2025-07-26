@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2024 Huri Money -->
+<!-- License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl) -->
+<odoo>
+    <record id="jibble_sync_wizard_form" model="ir.ui.view">
+        <field name="name">jibble.sync.wizard.form</field>
+        <field name="model">jibble.sync.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Jibble Synchronization">
+                <group>
+                    <group>
+                        <field name="from_date" />
+                        <field name="to_date" />
+                    </group>
+                </group>
+                <footer>
+                    <button
+                        name="manual_sync_jibble"
+                        type="object"
+                        string="Synchronize Now"
+                        class="btn-primary"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_jibble_sync_wizard" model="ir.actions.act_window">
+        <field name="name">Jibble Synchronization</field>
+        <field name="res_model">jibble.sync.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+        id="menu_jibble_sync"
+        name="Synchronize Jibble"
+        parent="hr.menu_hr_root"
+        action="action_jibble_sync_wizard"
+        sequence="99"
+        groups="hr.group_hr_user"
+    />
+</odoo>
