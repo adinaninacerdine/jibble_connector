@@ -26,15 +26,13 @@ The Jibble Connector module provides seamless integration between [Jibble](https
 
 ### Install
 
-1. Clone this repository to your Odoo addons directory:
-```bash
-git clone https://github.com/HuriMoney/jibble_connector.git /path/to/odoo/addons/
-```
+1. Clone this repository to your Odoo addons directory::
 
-2. Install Python dependencies:
-```bash
-pip install -r requirements.txt
-```
+    git clone https://github.com/HuriMoney/jibble_connector.git /path/to/odoo/addons/
+
+2. Install Python dependencies::
+
+    pip install -r requirements.txt
 
 3. Update your Odoo apps list and install the module:
    - Go to Apps menu
@@ -98,36 +96,37 @@ The module handles these Jibble webhook events:
 ## Development
 
 ### Project Structure
-```
-jibble_connector/
-├── __init__.py
-├── __manifest__.py
-├── models/
-│   ├── hr_employee.py
-│   ├── hr_attendance.py
-│   ├── jibble_sync_log.py
-│   └── res_config_settings.py
-├── views/
-│   ├── hr_employee_views.xml
-│   ├── jibble_sync_log_views.xml
-│   └── res_config_settings_views.xml
-├── controllers/
-│   └── webhook.py
-├── wizards/
-│   └── jibble_sync_wizard.py
-├── security/
-│   ├── ir.model.access.csv
-│   └── security.xml
-└── data/
-    └── ir_cron_data.xml
-```
+
+::
+
+    jibble_connector/
+    ├── __init__.py
+    ├── __manifest__.py
+    ├── models/
+    │   ├── hr_employee.py
+    │   ├── hr_attendance.py
+    │   ├── jibble_sync_log.py
+    │   └── res_config_settings.py
+    ├── views/
+    │   ├── hr_employee_views.xml
+    │   ├── jibble_sync_log_views.xml
+    │   └── res_config_settings_views.xml
+    ├── controllers/
+    │   └── webhook.py
+    ├── wizards/
+    │   └── jibble_sync_wizard.py
+    ├── security/
+    │   ├── ir.model.access.csv
+    │   └── security.xml
+    └── data/
+        └── ir_cron_data.xml
 
 ### Running Tests
 
-```bash
-# Run module tests
-odoo-bin -c config.conf -d test_db -i jibble_connector --test-enable --stop-after-init
-```
+::
+
+    # Run module tests
+    odoo-bin -c config.conf -d test_db -i jibble_connector --test-enable --stop-after-init
 
 ## Troubleshooting
 
