@@ -44,18 +44,20 @@
                                 </div>
                                 <div class="row mt16">
                                     <div class="col-lg-3"></div>
-                                    <button
-                                        name="test_jibble_connection"
-                                        type="object"
-                                        string="Test Connection"
-                                        class="btn-secondary"
-                                    />
-                                    <button
-                                        name="discover_jibble_organization"
-                                        type="object"
-                                        string="Discover Organization"
-                                        class="btn-secondary ml8"
-                                    />
+                                    <div class="col-lg-9">
+                                        <button
+                                            name="test_jibble_connection"
+                                            type="object"
+                                            string="Test Connection"
+                                            class="btn-secondary mr8"
+                                        />
+                                        <button
+                                            name="discover_jibble_organization"
+                                            type="object"
+                                            string="Discover Organization"
+                                            class="btn-secondary"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         </setting>

@@ -116,31 +116,51 @@ class JibbleApi(models.AbstractModel):
         if not api_key:
             return {"success": False, "message": "API Key not configured"}
         
-        # Test different API configurations
+        # Test different API configurations based on common patterns
         test_configs = [
+            # Standard Bearer token
+            {
+                "url": "https://api.jibble.io/v1",
+                "headers": {
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json"
+                },
+                "endpoints": ["me", "organizations", "people", "users"]
+            },
+            # Alternative API URLs
             {
                 "url": "https://workspace.prod.jibble.io/v1",
                 "headers": {
                     "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json"
                 },
-                "endpoints": ["People", "Organizations", "me"]
+                "endpoints": ["me", "organizations", "people", "users"]
             },
+            # X-API-Key header format
             {
-                "url": "https://api.jibble.io/v1", 
-                "headers": {
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json"
-                },
-                "endpoints": ["People", "Organizations", "me"]
-            },
-            {
-                "url": "https://workspace.prod.jibble.io/v1",
+                "url": "https://api.jibble.io/v1",
                 "headers": {
                     "X-API-Key": api_key,
                     "Content-Type": "application/json"
                 },
-                "endpoints": ["People", "Organizations", "me"]
+                "endpoints": ["me", "organizations", "people", "users"]
+            },
+            # Token without Bearer prefix
+            {
+                "url": "https://api.jibble.io/v1",
+                "headers": {
+                    "Authorization": api_key,
+                    "Content-Type": "application/json"
+                },
+                "endpoints": ["me", "organizations", "people", "users"]
+            },
+            # API Key in query parameter
+            {
+                "url": "https://api.jibble.io/v1",
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "endpoints": [f"me?api_key={api_key}", f"organizations?api_key={api_key}"]
             }
         ]
         
@@ -154,10 +174,12 @@ class JibbleApi(models.AbstractModel):
                     
                     if response.status_code == 200:
                         data = response.json()
+                        auth_method = "Bearer" if "Bearer" in str(config_test["headers"]) else "X-API-Key" if "X-API-Key" in str(config_test["headers"]) else "Direct"
                         return {
                             "success": True,
-                            "message": f"Connection successful! Endpoint: {endpoint}, URL: {config_test['url']}",
-                            "data": data[:3] if isinstance(data, list) else data  # Limit response size
+                            "message": f"✅ SUCCESS!\n\nEndpoint: {endpoint}\nURL: {config_test['url']}\nAuth: {auth_method}\n\nUse this configuration!",
+                            "data": data[:3] if isinstance(data, list) else data,
+                            "config": config_test
                         }
                     elif response.status_code == 401:
                         continue  # Try next config
@@ -173,7 +195,7 @@ class JibbleApi(models.AbstractModel):
         
         return {
             "success": False,
-            "message": "Authentication failed with all tested configurations. Verify your API key."
+            "message": "❌ Authentication failed with all tested configurations.\n\nTested:\n- Bearer token auth\n- X-API-Key header\n- Query parameter\n- Multiple URLs\n\nPlease verify:\n1. Your API key is correct\n2. API key has proper permissions\n3. Check Jibble documentation for changes"
         }
     
     @api.model  
