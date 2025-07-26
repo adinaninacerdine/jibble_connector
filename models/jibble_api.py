@@ -243,30 +243,43 @@ class JibbleApi(models.AbstractModel):
         debug_info.append("")
         debug_info.append("🧪 DETAILED TESTING:")
         
-        # Test configurations based on OFFICIAL Jibble API documentation
+        # Test configurations - trying different auth methods based on 401 errors
         test_configs = [
             {
-                "name": "✅ OFFICIAL Jibble API",
+                "name": "Bearer Token (Standard)",
                 "url": "https://workspace.prod.jibble.io/v1",
                 "headers": {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                "endpoints": [
-                    "People",
-                    "Organizations", 
-                    "CalendarDays",
-                    "TimeEntries",
-                    "Activities",
-                    "Projects"
-                ]
+                "endpoints": ["People", "Organizations"]
             },
             {
-                "name": "Jibble API with OData",
+                "name": "Token Header (Alternative)",
                 "url": "https://workspace.prod.jibble.io/v1",
-                "headers": {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                "endpoints": [
-                    "People?$top=1",
-                    "Organizations?$top=1",
-                    "TimeEntries?$top=1"
-                ]
+                "headers": {"Token": api_key, "Content-Type": "application/json"},
+                "endpoints": ["People", "Organizations"]
+            },
+            {
+                "name": "Access-Token Header",
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {"Access-Token": api_key, "Content-Type": "application/json"},
+                "endpoints": ["People", "Organizations"]
+            },
+            {
+                "name": "X-API-Token Header",
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {"X-API-Token": api_key, "Content-Type": "application/json"},
+                "endpoints": ["People", "Organizations"]
+            },
+            {
+                "name": "Authorization Direct",
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {"Authorization": api_key, "Content-Type": "application/json"},
+                "endpoints": ["People", "Organizations"]
+            },
+            {
+                "name": "API Key in Query",
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {"Content-Type": "application/json"},
+                "endpoints": [f"People?access_token={api_key}", f"People?api_key={api_key}", f"People?token={api_key}"]
             }
         ]
         
@@ -298,11 +311,16 @@ class JibbleApi(models.AbstractModel):
                 except Exception as e:
                     debug_info.append(f"    💥 Exception: {str(e)}")
         
-        debug_info.append("\n❌ ALL TESTS FAILED")
-        debug_info.append("\n💡 SUGGESTIONS:")
-        debug_info.append("1. Verify API key in Jibble settings")
-        debug_info.append("2. Check if API key has expired")
-        debug_info.append("3. Confirm API access is enabled")
-        debug_info.append("4. Try regenerating the API key")
+        debug_info.append("\n❌ ALL TESTS FAILED - 401 UNAUTHORIZED")
+        debug_info.append("\n💡 POSSIBLE ISSUES:")
+        debug_info.append("1. 🔑 API Key may need to be activated in Jibble")
+        debug_info.append("2. 🏢 Wrong organization/workspace context") 
+        debug_info.append("3. 📋 API permissions not granted to this key")
+        debug_info.append("4. 🌐 Need additional headers (User-Agent, etc.)")
+        debug_info.append("5. 🔄 Try different API key generation method")
+        debug_info.append("\n❓ QUESTIONS TO CHECK:")
+        debug_info.append("- Is this a Personal Access Token or API Key?")
+        debug_info.append("- Does the key show as 'Active' in Jibble settings?")
+        debug_info.append("- What permissions were selected when creating the key?")
         
         return {"message": "\n".join(debug_info)}
