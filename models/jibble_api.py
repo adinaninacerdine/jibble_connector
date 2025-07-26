@@ -75,8 +75,8 @@ class JibbleApi(models.AbstractModel):
         if not config["organization_id"]:
             raise UserError("Jibble Organization ID is not configured")
         
-        # Try different endpoint formats
-        endpoint = "People"  # Simplified endpoint
+        # Use official Jibble API endpoint
+        endpoint = "People"  # Official endpoint from documentation
         return self._make_request("GET", endpoint)
 
     @api.model
@@ -92,7 +92,7 @@ class JibbleApi(models.AbstractModel):
         if not to_date:
             to_date = datetime.now().strftime("%Y-%m-%d")
 
-        endpoint = "TimeEntries"
+        endpoint = "TimeEntries"  # Official Jibble API endpoint
         params = {
             "from": from_date,
             "to": to_date,
@@ -243,25 +243,30 @@ class JibbleApi(models.AbstractModel):
         debug_info.append("")
         debug_info.append("🧪 DETAILED TESTING:")
         
-        # Test configurations with detailed logging
+        # Test configurations based on OFFICIAL Jibble API documentation
         test_configs = [
             {
-                "name": "Standard Bearer Token",
-                "url": "https://api.jibble.io/v1",
-                "headers": {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                "endpoints": ["me", "user", "profile"]
-            },
-            {
-                "name": "X-API-Key Header",
-                "url": "https://api.jibble.io/v1", 
-                "headers": {"X-API-Key": api_key, "Content-Type": "application/json"},
-                "endpoints": ["me", "user", "profile"]
-            },
-            {
-                "name": "Workspace URL + Bearer",
+                "name": "✅ OFFICIAL Jibble API",
                 "url": "https://workspace.prod.jibble.io/v1",
                 "headers": {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-                "endpoints": ["me", "user", "profile"]
+                "endpoints": [
+                    "People",
+                    "Organizations", 
+                    "CalendarDays",
+                    "TimeEntries",
+                    "Activities",
+                    "Projects"
+                ]
+            },
+            {
+                "name": "Jibble API with OData",
+                "url": "https://workspace.prod.jibble.io/v1",
+                "headers": {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+                "endpoints": [
+                    "People?$top=1",
+                    "Organizations?$top=1",
+                    "TimeEntries?$top=1"
+                ]
             }
         ]
         
