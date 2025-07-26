@@ -49,7 +49,7 @@ class JibbleApi(models.AbstractModel):
             _logger.info("Jibble synchronization is disabled")
             return None
 
-        base_url = "https://api.jibble.io/v1"
+        base_url = "https://workspace.prod.jibble.io/v1"
         url = f"{base_url}/{endpoint}"
         headers = self._get_headers()
 
@@ -75,7 +75,8 @@ class JibbleApi(models.AbstractModel):
         if not config["organization_id"]:
             raise UserError("Jibble Organization ID is not configured")
         
-        endpoint = f"Organizations/{config['organization_id']}/People"
+        # Try different endpoint formats
+        endpoint = "People"  # Simplified endpoint
         return self._make_request("GET", endpoint)
 
     @api.model
@@ -91,7 +92,7 @@ class JibbleApi(models.AbstractModel):
         if not to_date:
             to_date = datetime.now().strftime("%Y-%m-%d")
 
-        endpoint = f"Organizations/{config['organization_id']}/TimeEntries"
+        endpoint = "TimeEntries"
         params = {
             "from": from_date,
             "to": to_date,
@@ -109,11 +110,43 @@ class JibbleApi(models.AbstractModel):
     @api.model
     def test_connection(self):
         """Test connection to Jibble API"""
-        try:
-            result = self.get_organization_people()
-            if result:
-                return {"success": True, "message": "Connection successful"}
-            else:
-                return {"success": False, "message": "No data received"}
-        except Exception as e:
-            return {"success": False, "message": str(e)}
+        # Test different API URLs
+        test_urls = [
+            "https://workspace.prod.jibble.io/v1",
+            "https://api.jibble.io/v1", 
+            "https://workspace.jibble.io/v1"
+        ]
+        
+        config = self._get_api_config()
+        headers = self._get_headers()
+        
+        for base_url in test_urls:
+            try:
+                # Test simple endpoint
+                url = f"{base_url}/People"
+                response = requests.get(url, headers=headers, timeout=10)
+                
+                if response.status_code == 200:
+                    return {
+                        "success": True, 
+                        "message": f"Connection successful with {base_url}"
+                    }
+                elif response.status_code == 401:
+                    return {
+                        "success": False,
+                        "message": "Authentication failed - check your API key"
+                    }
+                elif response.status_code == 403:
+                    return {
+                        "success": False,
+                        "message": "Access forbidden - check your permissions"
+                    }
+                    
+            except requests.exceptions.RequestException as e:
+                _logger.debug(f"Failed to connect to {base_url}: {str(e)}")
+                continue
+        
+        return {
+            "success": False,
+            "message": "Could not connect to any Jibble API endpoint. Check your API key and network connection."
+        }
